@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Confirmar : MonoBehaviour {
 
@@ -8,6 +9,8 @@ public class Confirmar : MonoBehaviour {
         Debug.Log("Sim");
         GameObject.Find("WebCam").GetComponent<WebCam>().SalvarFoto();
         GameObject.Find("WebCam").GetComponent<WebCam>().ValorInicial();
+		GameObject.Find("Config").GetComponent<Button>().interactable = true;
+		GameObject.Find ("Canvas").GetComponent<VariavelSave> ().SalvarVariavel ();
         Destroy(GameObject.FindWithTag("Confir"));
 
 
@@ -17,6 +20,7 @@ public class Confirmar : MonoBehaviour {
     {
         Debug.Log("Nao");
         GameObject.Find("WebCam").GetComponent<WebCam>().ValorInicial();
+		GameObject.Find("Config").GetComponent<Button>().interactable = true;
         Destroy(GameObject.FindWithTag("Confir"));
     }
 }

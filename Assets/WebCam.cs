@@ -8,7 +8,7 @@ public class WebCam : MonoBehaviour {
    
 	public WebCamTexture webcamTex;
     RawImage imagemWebCam;
-    int NumeroFoto = 0;
+    public int NumeroFoto = 0;
 	public float tempoTotal;
 	private bool comecarContagem;
     private bool tirarFoto;
@@ -22,6 +22,7 @@ public class WebCam : MonoBehaviour {
         RawImage imagemWebCam  = GetComponent<RawImage>();
         imagemWebCam.texture = webcamTex;
         ValorInicial();
+		GameObject.Find("Canvas").GetComponent<VariavelSave>().LerVariavel();
 
     }
     
@@ -52,6 +53,7 @@ public class WebCam : MonoBehaviour {
             instConf = GameObject.Instantiate(confir) as GameObject;
             instConf.transform.SetParent(GameObject.Find("Canvas").transform);
             instConf.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
+			GameObject.Find("Config").GetComponent<Button>().interactable = false;
         }
 	
 	}
@@ -67,10 +69,9 @@ public class WebCam : MonoBehaviour {
         {
             Directory.CreateDirectory((System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/Fotos"));
         }
-        System.IO.File.WriteAllBytes(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/Fotos/Foto_" + NumeroFoto.ToString () + ".png", foto.EncodeToPNG ());
-		++NumeroFoto;
-        //(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop)
+		System.IO.File.WriteAllBytes(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/Fotos/Foto_" + NumeroFoto.ToString () + ".jpg", foto.EncodeToJPG (80));
         FTPMetodo();
+		++NumeroFoto;
 
 
     }
@@ -93,6 +94,10 @@ public class WebCam : MonoBehaviour {
         {
             tempoTotal = GameObject.Find("Config").GetComponent<Config>().valorTempo;
         }
+		else
+		{
+			GameObject.Find("Config").GetComponent<Config>().valorTempo = tempoTotal;
+		}
 
     }
 
@@ -101,15 +106,15 @@ public class WebCam : MonoBehaviour {
 
         //Comunicando com o servidor
 
-        FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://192.168.0.100/Foto_" + NumeroFoto + ".png");
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://agenciashift.com.br/foto_" + NumeroFoto + ".jpg");
         request.Method = WebRequestMethods.Ftp.UploadFile;
 
         // credenciais
         request.Credentials =
-            new NetworkCredential("usuario", "admin");
+            new NetworkCredential("donanina@agenciashift.com.br", "1224364848");
 
         // lendo o a lista de bytes do arquivo
-        byte[] bytes = System.IO.File.ReadAllBytes(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/Fotos/Foto_" + NumeroFoto.ToString() + ".png");
+        byte[] bytes = System.IO.File.ReadAllBytes(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/Fotos/Foto_" + NumeroFoto.ToString() + ".jpg");
 
         // gravando para fazer upload
         request.ContentLength = bytes.Length;
