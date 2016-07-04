@@ -31,33 +31,38 @@ public class WebCam : MonoBehaviour {
         comecarContagem = true;
 	}
 
-	void Update () {
+    void Update()
+    {
 
-    GameObject.Find("Tempo").GetComponent<Text>().text = tempoTotal.ToString("F0");
+        GameObject.Find("Tempo").GetComponent<Text>().text = tempoTotal.ToString("F0");
 
-		//contagem regressiva 
-		if(tempoTotal > 0.5 && comecarContagem)
-		{
-			UiVisivel (true);
-			tempoTotal = tempoTotal - Time.deltaTime;
-			//comecarContagem = false;
-            
-		}
-		//Tira a foto e salvar;
-        if (tempoTotal <= 0.5f && tirarFoto) {
+        //contagem regressiva 
+        if (tempoTotal > 0.5 && comecarContagem)
+        {
+            UiVisivel(true);
+            tempoTotal = tempoTotal - Time.deltaTime;
+            //comecarContagem = false;
+
+        }
+        //Tira a foto e salvar;
+        if (tempoTotal <= 0.5f && tirarFoto)
+        {
             GameObject.Find("Flash").GetComponent<RawImage>().enabled = true;
             webcamTex.Pause();
-            UiVisivel (false);
+            UiVisivel(false);
             GameObject.Find("Flash").GetComponent<RawImage>().CrossFadeAlpha(0, 1, false);
             tirarFoto = false;
             instConf = GameObject.Instantiate(confir) as GameObject;
             instConf.transform.SetParent(GameObject.Find("Canvas").transform);
             instConf.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
-			GameObject.Find("Config").GetComponent<Button>().interactable = false;
+            GameObject.Find("Config").GetComponent<Button>().interactable = false;
         }
-	
-	}
 
+        if (tempoTotal <= 2f && tirarFoto)
+        {
+            GameObject.Find("dedao").GetComponent<Animator>().SetTrigger("dedaoFoto");
+        }
+    }
    //Salva Foto
     public void SalvarFoto()
 	{
