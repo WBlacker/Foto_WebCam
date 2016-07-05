@@ -10,7 +10,7 @@ public class Confirmar : MonoBehaviour {
         GameObject.Find("WebCam").GetComponent<WebCam>().SalvarFoto();
         GameObject.Find("WebCam").GetComponent<WebCam>().ValorInicial();
 		GameObject.Find("Config").GetComponent<Button>().interactable = true;
-		GameObject.Find ("Canvas").GetComponent<VariavelSave> ().SalvarVariavel ();
+		GameObject.Find ("CanvasIntro").GetComponent<VariavelSave> ().SalvarVariavel ();
         Destroy(GameObject.FindWithTag("Confir"));
 
 

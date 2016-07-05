@@ -15,14 +15,20 @@ public class WebCam : MonoBehaviour {
     public GameObject confir;
     private GameObject instConf;
     private Texture2D foto;
+	private bool animDedo;
+	public float width;
+	public float height;
 
-    void Start () {
+	void Start (){
 		//Variaveis
+
         webcamTex = new WebCamTexture();
         RawImage imagemWebCam  = GetComponent<RawImage>();
         imagemWebCam.texture = webcamTex;
+		width = Screen.width;
+		height = Screen.height;
         ValorInicial();
-		GameObject.Find("Canvas").GetComponent<VariavelSave>().LerVariavel();
+		GameObject.Find("CanvasIntro").GetComponent<VariavelSave>().LerVariavel();
 
     }
     
@@ -47,6 +53,8 @@ public class WebCam : MonoBehaviour {
         //Tira a foto e salvar;
         if (tempoTotal <= 0.5f && tirarFoto)
         {
+
+			Application.CaptureScreenshot ("Foto" + NumeroFoto + ".png");
             GameObject.Find("Flash").GetComponent<RawImage>().enabled = true;
             webcamTex.Pause();
             UiVisivel(false);
@@ -58,15 +66,16 @@ public class WebCam : MonoBehaviour {
             GameObject.Find("Config").GetComponent<Button>().interactable = false;
         }
 
-        if (tempoTotal <= 2f && tirarFoto)
+		if (tempoTotal <= 1f && tirarFoto && animDedo)
         {
             GameObject.Find("dedao").GetComponent<Animator>().SetTrigger("dedaoFoto");
+			animDedo = false;
         }
     }
    //Salva Foto
     public void SalvarFoto()
 	{
-        foto = new Texture2D(webcamTex.width, webcamTex.height);
+		foto = new Texture2D (webcamTex.width, webcamTex.height);
 		foto.SetPixels (webcamTex.GetPixels ());
 		foto.Apply ();
 
@@ -74,8 +83,14 @@ public class WebCam : MonoBehaviour {
         {
             Directory.CreateDirectory((System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/Fotos"));
         }
+
+		Texture2D tex = new Texture2D (Screen.width, Screen.height, TextureFormat.RGB24, false);
+		tex.ReadPixels (new Rect(0, 0, Screen.width, Screen.height), 0, 0);
+		tex.Apply ();
+
 		System.IO.File.WriteAllBytes(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/Fotos/Foto_" + NumeroFoto.ToString () + ".jpg", foto.EncodeToJPG (80));
-        FTPMetodo();
+		System.IO.File.WriteAllBytes(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/Fotos/FotoScreen_" + NumeroFoto.ToString () + ".jpg", tex.EncodeToJPG (80));
+        //FTPMetodo();
 		++NumeroFoto;
 
 
@@ -103,7 +118,7 @@ public class WebCam : MonoBehaviour {
 		{
 			GameObject.Find("Config").GetComponent<Config>().valorTempo = tempoTotal;
 		}
-
+		animDedo = true;
     }
 
     public void FTPMetodo()
